@@ -49,9 +49,10 @@
 
 			const formData = new FormData(form);
 			const url = 'https://buzzchat.site/mobile_api/search_people';
+			const queryParams = new URLSearchParams(formData).toString();
 
 			try {
-				const response = await fetch(url + '?' + new URLSearchParams(formData));
+				const response = await fetch(`${url}?${queryParams}`);
 				const data = await response.json();
 
 				// Clear previous results
@@ -68,7 +69,7 @@
 				resultsTable.appendChild(headerRow);
 
 				// Create result rows
-				data.forEach((person) => {
+				data.data.forEach((person) => {
 					const row = document.createElement('tr');
 					const nameCell = document.createElement('td');
 					nameCell.textContent = person.name;
