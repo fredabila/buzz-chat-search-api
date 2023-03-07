@@ -26,15 +26,6 @@
 		<label for="query">Search keywords:</label>
 		<input type="text" id="query" name="query" required>
 
-		<label for="offset">Last post offset ID:</label>
-		<input type="text" id="offset" name="offset">
-
-		<label for="session_id">Access token ID:</label>
-		<input type="text" id="session_id" name="session_id">
-
-		<label for="page_size">Total post limit for each request:</label>
-		<input type="text" id="page_size" name="page_size" value="20" required>
-
 		<button type="submit">Search</button>
 	</form>
 
@@ -48,11 +39,10 @@
 			event.preventDefault();
 
 			const formData = new FormData(form);
-			const url = 'https://buzzchat.site/mobile_api/search_people';
-			const queryParams = new URLSearchParams(formData).toString();
+			const url = `https://buzzchat.site/mobile_api/search_people?${formData.get('query')}`;
 
 			try {
-				const response = await fetch(`${url}?${queryParams}`);
+				const response = await fetch(url);
 				const data = await response.json();
 
 				// Clear previous results
