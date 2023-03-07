@@ -1,79 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Search People</title>
-	<style>
-		table {
-			border-collapse: collapse;
-			width: 100%;
-		}
-
-		th, td {
-			text-align: left;
-			padding: 8px;
-			border-bottom: 1px solid #ddd;
-		}
-
-		th {
-			background-color: #04AA6D;
-			color: white;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <title>Search People</title>
 </head>
 <body>
-	<h1>Search People</h1>
-	<form id="search-form">
-		<label for="query">Search keywords:</label>
-		<input type="text" id="query" name="query" required>
+    <form onsubmit="searchPeople(); return false;">
+        <label>Search Query:</label>
+        <input type="text" id="query" name="query">
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
 
-		<button type="submit">Search</button>
-	</form>
+    <script>
+        function searchPeople() {
+            var query = document.getElementById("query").value;
+            var proxyUrl = "https://cors-anywhere.herokuapp.com/";
+            var targetUrl = "https://buzzchat.site/mobile_api/search_people?query=" + encodeURIComponent(query);
 
-	<table id="results"></table>
-
-	<script>
-		const form = document.querySelector('#search-form');
-		const resultsTable = document.querySelector('#results');
-
-		form.addEventListener('submit', async (event) => {
-			event.preventDefault();
-
-			const formData = new FormData(form);
-			const url = `https://buzzchat.site/mobile_api/search_people?query=${formData.get('query')}`;
-
-			try {
-				const response = await fetch(url);
-				const data = await response.json();
-
-				// Clear previous results
-				resultsTable.innerHTML = '';
-
-				// Create header row
-				const headerRow = document.createElement('tr');
-				const nameHeader = document.createElement('th');
-				nameHeader.textContent = 'Name';
-				const emailHeader = document.createElement('th');
-				emailHeader.textContent = 'Email';
-				headerRow.appendChild(nameHeader);
-				headerRow.appendChild(emailHeader);
-				resultsTable.appendChild(headerRow);
-
-				// Create result rows
-				data.data.forEach((person) => {
-					const row = document.createElement('tr');
-					const nameCell = document.createElement('td');
-					nameCell.textContent = person.name;
-					const emailCell = document.createElement('td');
-					emailCell.textContent = person.email;
-					row.appendChild(nameCell);
-					row.appendChild(emailCell);
-					resultsTable.appendChild(row);
-				});
-			} catch (error) {
-				console.error(error);
-				alert('An error occurred while fetching results. Please try again later.');
-			}
-		});
-	</script>
+            fetch(proxyUrl + targetUrl)
+                .then(response => response.json())
+                .then(data => {
+                    var table = "<table><thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Name</th></tr></thead><tbody>";
+                    data.data.forEach(person => {
+                        table += "<tr><td>" + person.id + "</td><td>" + person.username + "</td><td>" + person.email + "</td><td>" + person.name + "</td></tr>";
+                    });
+                    table += "</tbody></table>";
+                    document.getElementById("results").innerHTML = table;
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
 </body>
 </html>
