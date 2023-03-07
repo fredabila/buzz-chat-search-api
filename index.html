@@ -39,7 +39,7 @@
 			event.preventDefault();
 
 			const formData = new FormData(form);
-			const url = `https://buzzchat.site/mobile_api/search_people?${formData.get('query')}`;
+			const url = `https://buzzchat.site/mobile_api/search_people?query=${formData.get('query')}`;
 
 			try {
 				const response = await fetch(url);
